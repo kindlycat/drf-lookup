@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "drf-lookup"
-version = "0.1.1"
+version = "0.1.2"
 description = "Helper for retrieve select options of drf fields and django-filter filters."
 authors = ["Grigory Mishchenko <grishkokot@gmail.com>"]
 readme = "README.md"

@@ -159,8 +159,9 @@ class LookupQuerySetHandler(LookupBaseHandler):
                 request=self.request,
                 view=self.view,
             )
-            return paginator.get_paginated_response(
-                self.get_data(page, serializer)
-            )
+            if page is not None:
+                return paginator.get_paginated_response(
+                    self.get_data(page, serializer)
+                )
 
         return Response(self.get_data(qs, serializer))
