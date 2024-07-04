@@ -74,7 +74,7 @@ class ArticleViewSet(LookupMixin, ModelViewSet):
 Now, we can request options for the `category` field:
 
 ```
-GET /articles/lookup_serializer/?action=create&lookup_field=category
+GET /articles/lookup_serializer/?lookup_action=create&lookup_field=category
 
-GET /articles/lookup_filterset/?action=list&lookup_field=category
+GET /articles/lookup_filterset/?lookup_action=list&lookup_field=category
 ```
