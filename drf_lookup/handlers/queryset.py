@@ -98,6 +98,7 @@ class LookupQuerySetHandler(LookupBaseHandler):
             qs = self.lookup.filterset(
                 queryset=qs,
                 data=self.request.query_params,
+                request=self.request,
             ).qs
         return qs
 
