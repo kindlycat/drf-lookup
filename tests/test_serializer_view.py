@@ -7,7 +7,7 @@ from rest_framework import serializers
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.serializers import ModelSerializer
 
-from drf_lookup.lookup import Lookup
+from drf_lookup import Lookup
 from tests.app.filters import CategoryFilterSet
 from tests.app.models import Article, ArticleType, Category, Tag
 from tests.app.serializers import ArticleSerializer

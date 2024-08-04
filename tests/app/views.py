@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 
-from drf_lookup.views import LookupMixin
+from drf_lookup import LookupMixin
 from tests.app.filters import ArticleFilterSet, CustomListArticleFilterSet
 from tests.app.models import Article
 from tests.app.serializers import (

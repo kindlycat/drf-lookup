@@ -8,10 +8,10 @@ from django.test import RequestFactory
 from rest_framework import serializers
 from rest_framework.request import Request
 
+from drf_lookup import Lookup
 from drf_lookup.handlers.boolean import LookupBooleanHandler
 from drf_lookup.handlers.choices import LookupChoiceHandler
 from drf_lookup.handlers.queryset import LookupQuerySetHandler
-from drf_lookup.lookup import Lookup
 from tests.app.models import Article, ArticleType, Category, CategoryPriority
 
 

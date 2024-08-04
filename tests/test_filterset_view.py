@@ -4,7 +4,7 @@ import django_filters
 import pytest
 from rest_framework import serializers
 
-from drf_lookup.lookup import Lookup
+from drf_lookup import Lookup
 from tests.app.filters import ArticleFilterSet, CategoryFilterSet
 from tests.app.models import ArticleType, Category, Tag
 
