@@ -10,4 +10,4 @@ coverage.xml
 
 !.gitignore
 !.github
-!.temp/.readthedocs.yaml
+!.readthedocs.yaml
