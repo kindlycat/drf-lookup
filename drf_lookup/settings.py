@@ -24,4 +24,8 @@ DRF_LOOKUP_QUERYSET_SERIALIZER = import_string(
 
 
 # Search param for lookup
-DRF_LOOKUP_SEARCH_PARAM = api_settings.SEARCH_PARAM
+DRF_LOOKUP_SEARCH_PARAM = getattr(
+    settings,
+    'DRF_LOOKUP_SEARCH_PARAM',
+    api_settings.SEARCH_PARAM,
+)
