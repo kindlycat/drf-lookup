@@ -23,11 +23,9 @@ class FakeView(NamedTuple):
 
     Attributes:
         search_fields (str): The fields to be used for searching.
-        search_param (str): The parameter to be used for searching.
     """
 
     search_fields: str
-    search_param: str
 
 
 class NullElement(NamedTuple):
@@ -79,13 +77,12 @@ class LookupQuerySetHandler(LookupBaseHandler):
             param='search_fields',
             default=getattr(qs.model, 'search_fields', None),
         ):
-            qs = SearchFilter().filter_queryset(
+            search_filter = SearchFilter()
+            search_filter.search_param = settings.DRF_LOOKUP_SEARCH_PARAM
+            qs = search_filter.filter_queryset(
                 request=self.request,
                 queryset=qs,
-                view=FakeView(
-                    search_fields=search_fields,
-                    search_param=settings.DRF_LOOKUP_SEARCH_PARAM,
-                ),
+                view=FakeView(search_fields=search_fields),
             )
 
         if self.parent_queryset:
