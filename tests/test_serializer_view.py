@@ -21,7 +21,7 @@ class Paginator(PageNumberPagination):
     page_size = 1
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_fk(admin_client):
     Category.objects.create(name='Public')
     Category.objects.create(name='Nonpublic', is_public=False)
@@ -37,7 +37,7 @@ def test_serializer_lookup_fk(admin_client):
     assert response.json() == [{'id': 1, 'name': 'Public'}]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_m2m(admin_client):
     Tag.objects.create(name='Public')
     Tag.objects.create(name='Nonpublic', is_public=False)
@@ -53,7 +53,7 @@ def test_serializer_lookup_m2m(admin_client):
     assert response.json() == [{'id': 1, 'name': 'Public'}]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_choices(admin_client):
     params = {
         'lookup_action': 'create',
@@ -69,7 +69,7 @@ def test_serializer_lookup_choices(admin_client):
     ]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_bad_action_negative(admin_client):
     params = {
         'lookup_action': 'bad_action',
@@ -82,7 +82,7 @@ def test_serializer_bad_action_negative(admin_client):
     assert response.json() == ['Action does not exist.']
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_bad_field_negative(admin_client):
     params = {
         'lookup_action': 'create',
@@ -95,7 +95,7 @@ def test_serializer_bad_field_negative(admin_client):
     assert response.json() == ['Field does not exist.']
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_check_permission_negative(client):
     params = {
         'lookup_action': 'create',
@@ -107,7 +107,7 @@ def test_serializer_check_permission_negative(client):
     assert response.status_code == 403
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_queryset_search(admin_client, mocker):
     mocker.patch.object(
         ArticleSerializer.Meta,
@@ -132,7 +132,7 @@ def test_serializer_lookup_queryset_search(admin_client, mocker):
     assert response.json() == [{'id': 1, 'name': 'Category 1'}]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_choices_search(admin_client):
     params = {
         'lookup_action': 'create',
@@ -146,7 +146,7 @@ def test_serializer_lookup_choices_search(admin_client):
     assert response.json() == [{'id': 'news', 'name': 'News'}]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_queryset_custom_serializer(admin_client, mocker):
     class CustomCategorySerializer(serializers.Serializer):
         id = serializers.ReadOnlyField()
@@ -180,7 +180,7 @@ def test_serializer_lookup_queryset_custom_serializer(admin_client, mocker):
     ]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_queryset_custom_filterset(admin_client, mocker):
     class CustomCategoryFilterSet(django_filters.FilterSet):
         id = django_filters.NumberFilter(lookup_expr='iexact')
@@ -208,7 +208,7 @@ def test_serializer_lookup_queryset_custom_filterset(admin_client, mocker):
     assert response.json() == [{'id': 1, 'name': 'Category 1'}]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_queryset_custom_filterset_similar_params(
     admin_client, mocker
 ):
@@ -243,7 +243,7 @@ def test_serializer_lookup_queryset_custom_filterset_similar_params(
     assert response.json() == [{'id': 2, 'name': 'Category 2'}]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_custom_action(admin_client):
     params = {
         'lookup_action': 'custom_create',
@@ -256,7 +256,7 @@ def test_serializer_lookup_custom_action(admin_client):
     assert response.json() == [{'id': 'ad', 'name': 'Ad'}]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_update_action(admin_client):
     category = Category.objects.create(name='Category 1')
     Category.objects.create(name='Category 2')
@@ -278,7 +278,7 @@ def test_serializer_lookup_update_action(admin_client):
     assert response.json() == [{'id': category.id, 'name': category.name}]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_detail_negative(admin_client):
     params = {
         'lookup_action': 'update',
@@ -292,7 +292,7 @@ def test_serializer_lookup_detail_negative(admin_client):
     assert response.json() == ['Object not found.']
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_pagination(admin_client):
     Category.objects.create(name='Category 1')
     Category.objects.create(name='Category 2')
@@ -322,7 +322,7 @@ def test_serializer_lookup_pagination(admin_client):
     ]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_custom_pagination(admin_client, mocker):
     Category.objects.create(name='Category 1')
     Category.objects.create(name='Category 2')
@@ -357,7 +357,7 @@ def test_serializer_lookup_custom_pagination(admin_client, mocker):
     ]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_custom_pagination_unset(admin_client, mocker):
     Category.objects.create(name='Category 1')
     Category.objects.create(name='Category 2')
@@ -398,7 +398,7 @@ def test_serializer_lookup_custom_pagination_unset(admin_client, mocker):
     ]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_unsupported_field(admin_client):
     params = {
         'lookup_action': 'list',
@@ -411,7 +411,7 @@ def test_serializer_lookup_unsupported_field(admin_client):
     assert response.json() == ['Unsupported field.']
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_nested_filter_choices(mocker, admin_client):
     Category.objects.create(name='Category 1')
 
@@ -438,7 +438,7 @@ def test_serializer_lookup_nested_filter_choices(mocker, admin_client):
     ]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_nested_filter_queryset(mocker, admin_client):
     Category.objects.create(name='Category 1', author=admin_client.user)
 
@@ -465,7 +465,7 @@ def test_serializer_lookup_nested_filter_queryset(mocker, admin_client):
     ]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_nested_serializer_choices(mocker, admin_client):
     class TestCategorySerializer(ModelSerializer):
         class Meta:
@@ -501,7 +501,7 @@ def test_serializer_lookup_nested_serializer_choices(mocker, admin_client):
     ]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_serializer_lookup_nested_serializer_queryset(mocker, admin_client):
     class TestCategorySerializer(ModelSerializer):
         class Meta:

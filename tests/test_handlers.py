@@ -31,7 +31,7 @@ class ObjectCustomSerializer(serializers.Serializer):
         return str(instance)
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 class HandlerTests:
     field_class: type[django_filters.Filter | serializers.Serializer]
     handler_class: type[LookupBaseHandler]

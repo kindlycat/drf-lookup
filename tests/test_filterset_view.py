@@ -12,7 +12,7 @@ from tests.app.models import ArticleType, Category, Tag
 url = '/articles/lookup_filter/'
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_filter_lookup_fk(admin_client):
     Category.objects.create(name='Public')
     Category.objects.create(name='Nonpublic', is_public=False)
@@ -28,7 +28,7 @@ def test_filter_lookup_fk(admin_client):
     assert response.json() == [{'id': 1, 'name': 'Public'}]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_filter_lookup_m2m(admin_client):
     Tag.objects.create(name='Public')
     Tag.objects.create(name='Nonpublic', is_public=False)
@@ -44,7 +44,7 @@ def test_filter_lookup_m2m(admin_client):
     assert response.json() == [{'id': 1, 'name': 'Public'}]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_filter_lookup_choices(admin_client):
     params = {
         'lookup_action': 'list',
@@ -60,7 +60,7 @@ def test_filter_lookup_choices(admin_client):
     ]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_filter_bad_action_negative(admin_client):
     params = {
         'lookup_action': 'bad_action',
@@ -73,7 +73,7 @@ def test_filter_bad_action_negative(admin_client):
     assert response.json() == ['Action does not exist.']
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_filter_bad_field_negative(admin_client):
     params = {
         'lookup_action': 'list',
@@ -86,7 +86,7 @@ def test_filter_bad_field_negative(admin_client):
     assert response.json() == ['Field does not exist.']
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_filter_check_permission_negative(client):
     params = {
         'lookup_action': 'list',
@@ -98,7 +98,7 @@ def test_filter_check_permission_negative(client):
     assert response.status_code == 403
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_filter_lookup_queryset_search(admin_client, mocker):
     mocker.patch.object(
         ArticleFilterSet.Meta,
@@ -123,7 +123,7 @@ def test_filter_lookup_queryset_search(admin_client, mocker):
     assert response.json() == [{'id': 1, 'name': 'Category 1'}]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_filter_lookup_choices_search(admin_client):
     params = {
         'lookup_action': 'list',
@@ -137,7 +137,7 @@ def test_filter_lookup_choices_search(admin_client):
     assert response.json() == [{'id': 'news', 'name': 'News'}]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_filter_lookup_queryset_custom_serializer(admin_client, mocker):
     class CustomCategorySerializer(serializers.Serializer):
         id = serializers.ReadOnlyField()
@@ -171,7 +171,7 @@ def test_filter_lookup_queryset_custom_serializer(admin_client, mocker):
     ]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_filter_lookup_queryset_custom_filterset(admin_client, mocker):
     class CustomCategoryFilterSet(django_filters.FilterSet):
         id = django_filters.NumberFilter()
@@ -199,7 +199,7 @@ def test_filter_lookup_queryset_custom_filterset(admin_client, mocker):
     assert response.json() == [{'id': 1, 'name': 'Category 1'}]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_filter_lookup_custom_action(admin_client):
     params = {
         'lookup_action': 'custom_list',
@@ -212,7 +212,7 @@ def test_filter_lookup_custom_action(admin_client):
     assert response.json() == [{'id': 'ad', 'name': 'Ad'}]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_filter_lookup_unsupported_field(admin_client):
     params = {
         'lookup_action': 'list',
@@ -225,7 +225,7 @@ def test_filter_lookup_unsupported_field(admin_client):
     assert response.json() == ['Unsupported field.']
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_filter_lookup_nested_filter_choices(mocker, admin_client):
     Category.objects.create(name='Category 1')
 
@@ -252,7 +252,7 @@ def test_filter_lookup_nested_filter_choices(mocker, admin_client):
     ]
 
 
-@pytest.mark.django_db()
+@pytest.mark.django_db
 def test_filter_lookup_nested_filter_queryset(mocker, admin_client):
     Category.objects.create(name='Category 1', author=admin_client.user)
 
