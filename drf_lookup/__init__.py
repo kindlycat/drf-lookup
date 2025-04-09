@@ -8,7 +8,7 @@ from drf_lookup.views import (
 
 __all__ = [
     'Lookup',
-    'LookupMixin',
     'LookupFilterMixin',
+    'LookupMixin',
     'LookupSerializerMixin',
 ]
