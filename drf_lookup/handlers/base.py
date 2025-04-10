@@ -47,16 +47,12 @@ class LookupBaseHandler(abc.ABC):
 
     @property
     def field_name(self):
-        if field_name := getattr(self.field, 'field_name', None):
-            return field_name
-        return self.field.source.replace('.', '__')
+        return self.field.field_name
 
     @property
     def null_label(self):
-        if not isinstance(self.field, Filter):
-            return None
-
-        return self.field.field.null_label
+        if isinstance(self.field, Filter):
+            return self.field.field.null_label
 
     @property
     def search_query(self) -> str | None:

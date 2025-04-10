@@ -61,6 +61,23 @@ def test_filter_lookup_choices(admin_client):
 
 
 @pytest.mark.django_db
+def test_filter_lookup_boolean(admin_client):
+    params = {
+        'lookup_action': 'list',
+        'lookup_field': 'is_published',
+    }
+
+    response = admin_client.get(path=url, data=params)
+
+    assert response.status_code == 200
+    assert response.json() == [
+        {'id': 'null', 'name': 'Unknown'},
+        {'id': 'true', 'name': 'Yes'},
+        {'id': 'false', 'name': 'No'},
+    ]
+
+
+@pytest.mark.django_db
 def test_filter_bad_action_negative(admin_client):
     params = {
         'lookup_action': 'bad_action',
@@ -135,6 +152,20 @@ def test_filter_lookup_choices_search(admin_client):
 
     assert response.status_code == 200
     assert response.json() == [{'id': 'news', 'name': 'News'}]
+
+
+@pytest.mark.django_db
+def test_filter_lookup_boolean_search(admin_client):
+    params = {
+        'lookup_action': 'list',
+        'lookup_field': 'is_published',
+        'search': 'Y',
+    }
+
+    response = admin_client.get(path=url, data=params)
+
+    assert response.status_code == 200
+    assert response.json() == [{'id': 'true', 'name': 'Yes'}]
 
 
 @pytest.mark.django_db

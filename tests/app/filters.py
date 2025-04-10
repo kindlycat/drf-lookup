@@ -26,6 +26,7 @@ class ArticleFilterSet(django_filters.FilterSet):
             'category',
             'tags',
             'type_of',
+            'is_published',
         )
 
 
