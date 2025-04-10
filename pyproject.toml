@@ -122,4 +122,6 @@ source = ["drf_lookup"]
 [tool.coverage.report]
 exclude_also = [
     "if TYPE_CHECKING:",
+    "@abc.abstractmethod",
+    "def __str__",
 ]

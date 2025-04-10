@@ -62,6 +62,7 @@ class HandlerTests:
             title='First article',
             type_of=ArticleType.NEWS,
             is_published=True,
+            category=Category.objects.create(name='Test'),
         )
         handler = self.handler_class(
             field=self.field_class(**self.field_kwargs),
@@ -74,7 +75,11 @@ class HandlerTests:
         assert handler.response.data == self.expected
 
     def test_handler_custom_serializer(self, view):
-        Article.objects.create(title='First article', type_of=ArticleType.NEWS)
+        Article.objects.create(
+            title='First article',
+            type_of=ArticleType.NEWS,
+            category=Category.objects.create(name='Test'),
+        )
         handler = self.handler_class(
             field=self.field_class(**self.field_kwargs),
             view=view,
@@ -93,10 +98,6 @@ class TestChoiceFilter(HandlerTests):
         {'id': 'news', 'name': 'News'},
     ]
     custom_serializer_expected = [ArticleType.NEWS.label]
-    with_null_expected = [
-        {'id': 'null', 'name': 'No value'},
-        {'id': 'news', 'name': 'News'},
-    ]
     field_custom_serializer = ChoiceCustomSerializer
 
     @property
@@ -123,7 +124,10 @@ class TestChoiceFilter(HandlerTests):
             parent_queryset=self.parent_queryset,
         )
 
-        assert handler.response.data == self.with_null_expected
+        assert handler.response.data == [
+            {'id': 'null', 'name': 'No value'},
+            {'id': 'news', 'name': 'News'},
+        ]
 
     def test_handler_value_in_queryset_with_field_name(self, view):
         Article.objects.create(
@@ -217,6 +221,125 @@ class TestMultipleChoiceFilter(TestChoiceFilter):
     field_class = django_filters.MultipleChoiceFilter
 
 
+class TestModelChoiceFilter(HandlerTests):
+    field_class = django_filters.ModelChoiceFilter
+    handler_class = LookupQuerySetHandler
+    expected = [
+        {'id': 1, 'name': 'Test'},
+    ]
+    custom_serializer_expected = ['Test']
+    field_custom_serializer = ObjectCustomSerializer
+
+    @property
+    def parent_queryset(self) -> QuerySet[Article]:
+        return Article.objects.all()
+
+    @property
+    def field_kwargs(self):
+        return {
+            'queryset': Category.objects.all(),
+            'field_name': 'category',
+        }
+
+    def test_handler_with_null_positive(self, view):
+        Article.objects.create(
+            title='Test',
+            category=Category.objects.create(name='Test'),
+        )
+
+        handler = self.handler_class(
+            field=self.field_class(null_label='No value', **self.field_kwargs),
+            view=view,
+            request=Request(RequestFactory().get('/')),
+            lookup=Lookup(),
+            parent_queryset=self.parent_queryset,
+        )
+
+        assert handler.response.data == [
+            {'id': 1, 'name': 'Test'},
+        ]
+
+        Article.objects.create(title='Test', category=None)
+
+        assert handler.response.data == [
+            {'id': 'null', 'name': 'No value'},
+            {'id': 1, 'name': 'Test'},
+        ]
+
+    def test_handler_value_in_queryset_custom_filter_negative(self, view):
+        """Test choices with field not in the model.
+
+        If field is not in the model, then just return choices.
+        """
+        Category.objects.create(name='Test 1')
+        Category.objects.create(name='Test 2')
+        handler = self.handler_class(
+            field=self.field_class(
+                field_name='not_exist',
+                queryset=Category.objects.all(),
+            ),
+            view=view,
+            request=Request(RequestFactory().get('/')),
+            lookup=Lookup(),
+            parent_queryset=self.parent_queryset,
+        )
+
+        assert handler.response.data == [
+            {'id': 1, 'name': 'Test 1'},
+            {'id': 2, 'name': 'Test 2'},
+        ]
+
+    @pytest.mark.parametrize(
+        ('search', 'expected'),
+        [
+            (
+                'First category',
+                [
+                    {
+                        'id': 1,
+                        'name': 'First category',
+                    }
+                ],
+            ),
+            (
+                'Fir',
+                [
+                    {
+                        'id': 1,
+                        'name': 'First category',
+                    }
+                ],
+            ),
+            (
+                'cat',
+                [
+                    {
+                        'id': 1,
+                        'name': 'First category',
+                    },
+                    {
+                        'id': 2,
+                        'name': 'Second category',
+                    },
+                ],
+            ),
+            ('not_exist', []),
+        ],
+    )
+    def test_handler_with_search(self, view, search, expected):
+        Article.objects.create(
+            title='Test',
+            category=Category.objects.create(name='First category'),
+        )
+        Article.objects.create(
+            title='Test',
+            category=Category.objects.create(name='Second category'),
+        )
+        return self.run_test_handler_with_search(
+            view, search, expected, lookup=Lookup(search_fields=['name'])
+        )
+
+
 class TestBooleanFilter(HandlerTests):
     field_class = django_filters.BooleanFilter
     handler_class = LookupBooleanHandler
@@ -224,10 +347,6 @@ class TestBooleanFilter(HandlerTests):
         {'id': 'true', 'name': 'Yes'},
     ]
     custom_serializer_expected = ['Yes']
-    with_null_expected = [
-        {'id': 'null', 'name': 'Unknown'},
-        {'id': 'true', 'name': 'Yes'},
-    ]
     field_kwargs = {'field_name': 'is_published'}
     field_custom_serializer = ChoiceCustomSerializer
 
@@ -331,11 +450,6 @@ class TestBooleanChoiceField(HandlerTests):
         {'id': 'true', 'name': 'Yes'},
         {'id': 'false', 'name': 'No'},
     ]
-    with_null_expected = [
-        {'id': 'null', 'name': 'Unknown'},
-        {'id': 'true', 'name': 'Yes'},
-        {'id': 'false', 'name': 'No'},
-    ]
     custom_serializer_expected = ['Yes', 'No']
     field_kwargs = {'source': 'is_published'}
     field_custom_serializer = ChoiceCustomSerializer
@@ -380,7 +494,11 @@ class TestBooleanChoiceField(HandlerTests):
             parent_queryset=self.parent_queryset,
         )
 
-        assert handler.response.data == self.with_null_expected
+        assert handler.response.data == [
+            {'id': 'null', 'name': 'Unknown'},
+            {'id': 'true', 'name': 'Yes'},
+            {'id': 'false', 'name': 'No'},
+        ]
 
 
 class TestPrimaryKeyRelatedField(HandlerTests):
