@@ -88,7 +88,7 @@ class ArticleViewSet(LookupMixin, ModelViewSet):
 
 Now, it's possible to retrieve valid options for the serializer's `category` field.
 
-```json
+```jsonc
 // GET /api/articles/lookup_serializer/?lookup_action=create&lookup_field=category
 // Only public categories will be returned
 
@@ -105,7 +105,7 @@ Now, it's possible to retrieve valid options for the serializer's `category` fie
 ```
 
 And for the filter's `category` field.
-```json
+```jsonc
 // GET /api/articles/lookup_filter/?lookup_action=list&lookup_field=category
 // Only categories specified in articles will be returned
 
