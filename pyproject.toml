@@ -1,6 +1,6 @@
 [project]
 name = "drf-lookup"
-version = "0.1.6"
+version = "1.0.0"
 description = "Helper for retrieve select options of drf fields and django-filter filters."
 authors = [
     {name = "Grigory Mishchenko", email = "grishkokot@gmail.com"},
