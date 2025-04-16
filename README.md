@@ -1,5 +1,9 @@
 # Drf-lookup
 
+![PyPI - Version](https://img.shields.io/pypi/v/drf-lookup?logo=python)
+![Tests](https://github.com/kindlycat/drf-lookup/actions/workflows/tests.yml/badge.svg)
+[![Codecov](https://codecov.io/gh/kindlycat/drf-lookup/graph/badge.svg?token=J6wGdU9YH6)](https://codecov.io/gh/kindlycat/drf-lookup)
+
 Drf-lookup helps you retrieve options for serializer fields and django-filter
 filters. It adds additional actions to the viewset, checks the ``queryset`` and
 ``choices`` attributes and returns valid values for the requested field/filter. 
